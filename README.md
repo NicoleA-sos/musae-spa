@@ -4,7 +4,7 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Fases 1 y 2 completadas: estructura React/Vite, diseño responsive base, cliente de Supabase preparado, configuración de SPA para Vercel, migración PostgreSQL, datos iniciales y políticas RLS.
+Fases 1, 2 y 3 completadas: estructura React/Vite, diseño responsive base, autenticación con Supabase, configuración de SPA para Vercel, migración PostgreSQL, datos iniciales y políticas RLS.
 
 ## Requisitos
 
@@ -35,6 +35,12 @@ npm run build
 - Las escrituras de reservas, pagos, catálogo y horarios están bloqueadas en el cliente. Las Edge Functions de las fases posteriores las realizarán después de validar rol, precio y disponibilidad.
 
 Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y los datos iniciales.
+
+## Autenticación
+
+1. Crea `.env.local` a partir de `.env.example` y define la URL del proyecto y su clave `publishable` o `anon`.
+2. En Supabase, agrega `http://127.0.0.1:5173/auth` a las URL de redirección de Authentication antes de probar el registro con confirmación por correo.
+3. La ruta `/auth` permite crear una cuenta, iniciar sesión y cerrar sesión. El perfil, las reservas y la administración están protegidos por sesión y rol.
 
 ## Tecnologías
 
