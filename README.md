@@ -1,4 +1,4 @@
-# Musaé Reservas
+# Musaé Spa
 
 SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla por fases con React, Vite, TypeScript y Supabase.
 

@@ -25,9 +25,9 @@ export function AppShell({ children }: PropsWithChildren) {
             onClick={closeMenu}
           >
             <span className="grid size-8 place-items-center rounded-full bg-[#d65678] text-sm text-white" aria-hidden="true">
-              L
+              M
             </span>
-            Musaé
+            Musaé Spa
           </NavLink>
 
           <button
@@ -76,7 +76,7 @@ export function AppShell({ children }: PropsWithChildren) {
 
       <footer className="border-t border-rose-100 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>© 2026 Musaé. Reservas de belleza en Perú.</p>
+          <p>© 2026 Musaé Spa. Reservas de belleza en Perú.</p>
           <ConnectionStatus />
         </div>
       </footer>
