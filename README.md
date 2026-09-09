@@ -4,7 +4,7 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Fases 1 a 6 completadas en el código. La Fase 6 añade el historial completo de reservas de cada cliente.
+Fases 1 a 7 completadas en el código. La Fase 7 añade el panel de administración protegido del salón.
 
 ## Requisitos
 
@@ -67,4 +67,11 @@ Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la te
 - Supabase (Auth, PostgreSQL, RLS y Edge Functions)
 - Vercel
 
-El panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.
+Las pruebas finales y el despliegue se incorporarán en las fases posteriores.
+
+## Administración
+
+- La ruta `/administracion` está disponible únicamente para perfiles activos con rol `admin`.
+- Permite crear, editar o desactivar servicios; ajustar los horarios de atención; bloquear fechas; y gestionar el estado de las reservas recientes.
+- Las modificaciones se realizan mediante la Edge Function `admin-manage`, que vuelve a validar la sesión, el rol y los datos antes de escribir en la base de datos.
+- La primera cuenta administradora debe asignarse una sola vez desde Supabase; consulta la guía de `supabase/README.md`.

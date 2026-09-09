@@ -27,6 +27,23 @@ Supabase proporciona a sus Edge Functions alojadas las variables seguras de proy
 
 Nunca copies la `service_role_key` en `.env.local`, el frontend ni GitHub. Solo las Edge Functions la usarán como secreto de servidor.
 
+## Administración
+
+La función `functions/admin-manage` procesa los cambios del panel de administración. Solo funciona para perfiles con rol `admin` y estado `active`.
+
+1. Despliega la función con `supabase functions deploy admin-manage`.
+2. Asigna el primer rol administrador una sola vez desde SQL Editor, reemplazando el correo por el de tu cuenta:
+
+```sql
+update public.profiles
+set role = 'admin'
+where email = 'tu-correo@ejemplo.com';
+```
+
+3. Cierra sesión y vuelve a ingresar, o recarga la aplicación. Verás **Administración** en el menú.
+
+No otorgues el rol `admin` a clientes normales. El panel permite editar la disponibilidad, el catálogo y el estado de las reservas.
+
 ## Relaciones principales
 
 ```text
