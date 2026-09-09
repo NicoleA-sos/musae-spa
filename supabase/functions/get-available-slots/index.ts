@@ -65,6 +65,10 @@ Deno.serve(async (request) => {
       ]);
 
     if (servicesError || hoursError) {
+      console.error('Availability catalog query failed', {
+        servicesError: servicesError?.message ?? null,
+        hoursError: hoursError?.message ?? null,
+      });
       throw new Error('No fue posible consultar la disponibilidad.');
     }
 
@@ -123,4 +127,3 @@ Deno.serve(async (request) => {
     return jsonResponse(request, { error: message }, 400);
   }
 });
-
