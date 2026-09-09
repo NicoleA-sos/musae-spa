@@ -4,7 +4,7 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Fases 1, 2 y 3 completadas: estructura React/Vite, diseño responsive base, autenticación con Supabase, configuración de SPA para Vercel, migración PostgreSQL, datos iniciales y políticas RLS.
+Fases 1, 2 y 3 completadas. La Fase 4 incorpora el catálogo conectado a Supabase y deja preparado el flujo seguro de reserva mediante Edge Functions.
 
 ## Requisitos
 
@@ -32,9 +32,18 @@ npm run build
 - Cada registro relevante posee UUID, fechas de creación/actualización y el usuario responsable cuando existe una sesión autenticada.
 - Los precios, nombres y duración de cada servicio se copian a `reservation_items`; por eso una modificación posterior del catálogo no cambia el importe histórico de una reserva.
 - RLS permite que cada cliente lea solo su perfil, reservas y pagos. Los servicios activos son públicos.
-- Las escrituras de reservas, pagos, catálogo y horarios están bloqueadas en el cliente. Las Edge Functions de las fases posteriores las realizarán después de validar rol, precio y disponibilidad.
+- Las escrituras de reservas, pagos, catálogo y horarios están bloqueadas en el cliente. Las Edge Functions validan la sesión, disponibilidad y precios vigentes antes de crear una reserva.
 
 Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y los datos iniciales.
+
+## Catálogo y reservas
+
+- La página `/servicios` consulta las categorías, nombres, duraciones y precios reales de Supabase.
+- La página `/reservar` permite seleccionar servicios, fecha y un horario disponible; muestra los importes en soles peruanos.
+- `get-available-slots` calcula los horarios con la zona `America/Lima`, horarios de atención, fechas bloqueadas y reservas vigentes.
+- `create-reservation` vuelve a validar todo en el servidor y crea los importes históricos de cada servicio en una operación atómica.
+
+Antes de probar una reserva debes ejecutar la migración de Fase 4 y desplegar las dos Edge Functions. La guía explica esos pasos sin exponer claves privadas.
 
 ## Autenticación
 
@@ -49,4 +58,4 @@ Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y l
 - Supabase (Auth, PostgreSQL, RLS y Edge Functions)
 - Vercel
 
-Las migraciones, políticas RLS, funciones y configuración de despliegue se incorporarán en las fases posteriores.
+El pago simulado, historial, panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.
