@@ -79,7 +79,7 @@ Deno.serve(async (request) => {
     const totalDurationMinutes = services.reduce((total, service) => total + Number(service.duration_minutes), 0);
     const totalAmount = services.reduce((total, service) => total + Number(service.price), 0);
 
-    if (!hours || blockedDate.data) {
+    if (!hours || blockedDate) {
       return jsonResponse(request, {
         slots: [],
         totalDurationMinutes,
