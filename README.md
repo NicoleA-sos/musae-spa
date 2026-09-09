@@ -4,7 +4,7 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Fases 1 a 5 completadas en el código. La Fase 5 añade un pago simulado que confirma la reserva de forma segura desde el servidor.
+Fases 1 a 6 completadas en el código. La Fase 6 añade el historial completo de reservas de cada cliente.
 
 ## Requisitos
 
@@ -46,6 +46,12 @@ Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y l
 - `process-simulated-payment` registra un pago aprobado y cambia la reserva a `confirmed` en una sola operación del servidor. Solo puede pagar el propietario de una reserva futura pendiente.
 - `/mis-reservas` muestra las próximas reservas pendientes de pago y enlaza a su pago correspondiente.
 
+## Historial de reservas
+
+- `/mis-reservas` separa las próximas citas del historial y muestra sus servicios, total, estado de reserva y estado de pago.
+- Cada cliente sigue viendo únicamente sus propios datos mediante las políticas RLS existentes de Supabase.
+- Las reservas pendientes futuras conservan el botón para completar el pago simulado; las demás permiten consultar su detalle.
+
 Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la tercera Edge Function. La guía explica esos pasos sin exponer claves privadas.
 
 ## Autenticación
@@ -61,4 +67,4 @@ Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la te
 - Supabase (Auth, PostgreSQL, RLS y Edge Functions)
 - Vercel
 
-El historial completo, panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.
+El panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.

@@ -13,6 +13,7 @@ export function PaymentPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [currentTime] = useState(() => new Date().getTime());
 
   useEffect(() => {
     if (!reservationId) return;
@@ -78,14 +79,35 @@ export function PaymentPage() {
     );
   }
 
-  const isAlreadyConfirmed = reservation.status === 'confirmed';
+  const canProcessPayment = reservation.status === 'pending' && new Date(reservation.startsAt).getTime() > currentTime;
+  const paymentWasApproved = reservation.payment?.status === 'approved';
+  const reservationStatusLabel = {
+    pending: 'Pendiente de pago',
+    confirmed: 'Confirmada',
+    cancelled: 'Cancelada',
+    completed: 'Completada',
+    no_show: 'No asistió',
+  }[reservation.status];
+  const reservationStatusStyle = {
+    pending: 'bg-amber-100 text-amber-800',
+    confirmed: 'bg-emerald-100 text-emerald-800',
+    cancelled: 'bg-slate-200 text-slate-700',
+    completed: 'bg-sky-100 text-sky-800',
+    no_show: 'bg-red-100 text-red-800',
+  }[reservation.status];
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
-      <p className="text-sm font-semibold tracking-[0.18em] text-[#b83e63] uppercase">Pago simulado</p>
-      <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-[#2d1937]">Confirma tu reserva</h1>
+      <p className="text-sm font-semibold tracking-[0.18em] text-[#b83e63] uppercase">
+        {canProcessPayment ? 'Pago simulado' : 'Detalle de reserva'}
+      </p>
+      <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-[#2d1937]">
+        {canProcessPayment ? 'Confirma tu reserva' : 'Detalle de tu cita'}
+      </h1>
       <p className="mt-4 text-lg leading-8 text-slate-600">
-        Este entorno simula un pago: no solicita ni guarda datos de tarjetas reales.
+        {canProcessPayment
+          ? 'Este entorno simula un pago: no solicita ni guarda datos de tarjetas reales.'
+          : 'Consulta los servicios, fecha, importe y estado de esta reserva.'}
       </p>
 
       <div className="mt-8 rounded-3xl border border-rose-100 bg-white p-6 shadow-[0_18px_50px_-28px_rgba(82,24,57,0.45)] sm:p-8">
@@ -94,11 +116,8 @@ export function PaymentPage() {
             <h2 className="font-display text-2xl font-semibold text-[#2d1937]">Detalle de la cita</h2>
             <p className="mt-2 text-sm text-slate-600">{formatDateTimeInLima(reservation.startsAt)}</p>
           </div>
-          <span className={
-            'rounded-full px-3 py-1 text-sm font-semibold ' +
-            (isAlreadyConfirmed ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800')
-          }>
-            {isAlreadyConfirmed ? 'Confirmada' : 'Pendiente de pago'}
+          <span className={'rounded-full px-3 py-1 text-sm font-semibold ' + reservationStatusStyle}>
+            {reservationStatusLabel}
           </span>
         </div>
 
@@ -115,7 +134,7 @@ export function PaymentPage() {
         </ul>
 
         <div className="mt-6 flex items-center justify-between border-t border-rose-100 pt-5">
-          <span className="font-semibold text-slate-700">Total a pagar</span>
+          <span className="font-semibold text-slate-700">Total de la reserva</span>
           <strong className="font-display text-2xl text-[#2d1937]">{formatPen(reservation.totalAmount)}</strong>
         </div>
 
@@ -132,7 +151,7 @@ export function PaymentPage() {
           </output>
         ) : null}
 
-        {!result && !isAlreadyConfirmed ? (
+        {!result && canProcessPayment ? (
           <button
             type="button"
             className="mt-6 flex h-12 w-full items-center justify-center rounded-xl bg-[#d65678] px-4 text-sm font-semibold text-white transition hover:bg-[#b83e63] disabled:cursor-not-allowed disabled:opacity-60"
@@ -141,6 +160,14 @@ export function PaymentPage() {
           >
             {isProcessing ? 'Procesando pago…' : 'Simular pago de ' + formatPen(reservation.totalAmount)}
           </button>
+        ) : null}
+
+        {!result && !canProcessPayment ? (
+          <p className="mt-5 rounded-xl border border-rose-100 bg-rose-50 p-3 text-sm leading-6 text-slate-700">
+            {paymentWasApproved
+              ? 'El pago simulado fue aprobado y la reserva está confirmada.'
+              : 'Esta reserva ya no está disponible para pago.'}
+          </p>
         ) : null}
 
         <Link className="mt-5 block text-center text-sm font-semibold text-[#8f244c] hover:underline" to="/mis-reservas">
