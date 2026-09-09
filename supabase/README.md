@@ -13,7 +13,7 @@ La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la ope
 5. Ejecuta `migrations/202609080001_create_reservation_rpc.sql` después de la migración inicial. Si usas SQL Editor, pégala en una consulta nueva y selecciona **Run** una sola vez.
 6. Ejecuta `migrations/202609080002_grant_booking_function_reads.sql` una sola vez para habilitar la consulta segura de horarios desde las Edge Functions.
 7. Ejecuta `migrations/202609080003_process_simulated_payment.sql` una sola vez. Crea un índice que evita dos pagos aprobados para la misma reserva y permite que solo el servidor confirme una reserva tras el pago simulado.
-8. Crea el primer usuario administrador desde Supabase Auth. En la siguiente fase añadiremos una operación administrativa segura para asignarle el rol `admin`.
+8. Crea el primer usuario administrador desde Supabase Auth y asígnale el rol según la sección **Administración** de esta guía.
 
 ## Edge Functions de reservas
 
