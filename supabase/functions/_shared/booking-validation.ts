@@ -65,7 +65,7 @@ export function parseCreateReservationInput(value: unknown): CreateReservationIn
     throw new Error('Selecciona un horario válido.');
   }
 
-  if (body.customerNotes !== undefined && typeof body.customerNotes !== 'string') {
+  if (body.customerNotes !== undefined && body.customerNotes !== null && typeof body.customerNotes !== 'string') {
     throw new Error('Las notas de la reserva no son válidas.');
   }
 
@@ -81,4 +81,3 @@ export function parseCreateReservationInput(value: unknown): CreateReservationIn
     customerNotes: customerNotes || null,
   };
 }
-
