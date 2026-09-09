@@ -2,7 +2,7 @@
 
 La migración `migrations/202609070001_initial_schema.sql` crea las ocho tablas requeridas, los tipos de estado, los disparadores de auditoría, las validaciones de disponibilidad y las políticas RLS.
 
-La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos.
+La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos. La migración `migrations/202609080002_grant_booking_function_reads.sql` concede a las Edge Functions el acceso mínimo de lectura necesario para calcular disponibilidad.
 
 ## Aplicación en Supabase
 
@@ -11,7 +11,8 @@ La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la ope
 3. Ejecuta la migración mediante `supabase db push` o pega su contenido una sola vez en SQL Editor.
 4. Ejecuta `seed.sql` para cargar los servicios y horarios de demostración.
 5. Ejecuta `migrations/202609080001_create_reservation_rpc.sql` después de la migración inicial. Si usas SQL Editor, pégala en una consulta nueva y selecciona **Run** una sola vez.
-6. Crea el primer usuario administrador desde Supabase Auth. En la siguiente fase añadiremos una operación administrativa segura para asignarle el rol `admin`.
+6. Ejecuta `migrations/202609080002_grant_booking_function_reads.sql` una sola vez para habilitar la consulta segura de horarios desde las Edge Functions.
+7. Crea el primer usuario administrador desde Supabase Auth. En la siguiente fase añadiremos una operación administrativa segura para asignarle el rol `admin`.
 
 ## Edge Functions de reservas
 
