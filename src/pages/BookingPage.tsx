@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useServiceCatalog } from '../features/services/useServiceCatalog';
 import {
@@ -25,6 +26,7 @@ function getLimaDate(): string {
 }
 
 export function BookingPage() {
+  const navigate = useNavigate();
   const { errorMessage: catalogError, isLoading: isCatalogLoading, services } = useServiceCatalog();
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
   const [date, setDate] = useState(getLimaDate);
@@ -33,7 +35,6 @@ export function BookingPage() {
   const [quote, setQuote] = useState<AvailabilityQuote | null>(null);
   const [customerNotes, setCustomerNotes] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [notice, setNotice] = useState('');
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
 
@@ -55,7 +56,6 @@ export function BookingPage() {
     setQuote(null);
     setSelectedSlot(null);
     setErrorMessage('');
-    setNotice('');
   }
 
   function handleDateChange(nextDate: string) {
@@ -64,12 +64,10 @@ export function BookingPage() {
     setQuote(null);
     setSelectedSlot(null);
     setErrorMessage('');
-    setNotice('');
   }
 
   async function handleAvailability() {
     setErrorMessage('');
-    setNotice('');
 
     if (selectedServiceIds.length === 0) {
       setErrorMessage('Selecciona al menos un servicio para consultar horarios.');
@@ -99,7 +97,6 @@ export function BookingPage() {
 
   async function handleCreateReservation() {
     setErrorMessage('');
-    setNotice('');
 
     if (!selectedSlot) {
       setErrorMessage('Elige un horario disponible para continuar.');
@@ -115,13 +112,7 @@ export function BookingPage() {
         customerNotes: customerNotes.trim() || null,
       });
 
-      setNotice(
-        'Tu reserva fue creada. Código: ' +
-          reservationId +
-          '. En la siguiente fase podrás realizar el pago simulado.',
-      );
-      setSelectedSlot(null);
-      setSlots(null);
+      void navigate('/pago/' + reservationId);
     } catch (error) {
       setErrorMessage(getUserFacingError(error, 'No fue posible crear la reserva.'));
       setSelectedSlot(null);
@@ -295,12 +286,6 @@ export function BookingPage() {
             <p className="mt-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-800" role="alert">
               {errorMessage}
             </p>
-          ) : null}
-
-          {notice ? (
-            <output className="mt-5 block rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-800">
-              {notice}
-            </output>
           ) : null}
 
           <button

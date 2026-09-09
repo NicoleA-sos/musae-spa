@@ -13,6 +13,10 @@ export interface CreateReservationInput {
   customerNotes: string | null;
 }
 
+export interface PaymentInput {
+  reservationId: string;
+}
+
 function assertServiceIds(value: unknown): string[] {
   if (
     !Array.isArray(value) ||
@@ -80,4 +84,18 @@ export function parseCreateReservationInput(value: unknown): CreateReservationIn
     serviceIds: assertServiceIds(body.serviceIds),
     customerNotes: customerNotes || null,
   };
+}
+
+export function parsePaymentInput(value: unknown): PaymentInput {
+  if (!value || typeof value !== 'object') {
+    throw new Error('La solicitud no tiene un formato válido.');
+  }
+
+  const reservationId = (value as Record<string, unknown>).reservationId;
+
+  if (typeof reservationId !== 'string' || !uuidPattern.test(reservationId)) {
+    throw new Error('La reserva seleccionada no es válida.');
+  }
+
+  return { reservationId };
 }

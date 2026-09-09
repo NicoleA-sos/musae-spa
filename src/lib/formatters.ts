@@ -18,3 +18,10 @@ export function formatDuration(minutes: number): string {
     : String(hours) + ' h';
 }
 
+export function formatDateTimeInLima(value: string): string {
+  return new Intl.DateTimeFormat('es-PE', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: 'America/Lima',
+  }).format(new Date(value));
+}

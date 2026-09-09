@@ -4,7 +4,7 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Fases 1, 2 y 3 completadas. La Fase 4 incorpora el catálogo conectado a Supabase y deja preparado el flujo seguro de reserva mediante Edge Functions.
+Fases 1 a 5 completadas en el código. La Fase 5 añade un pago simulado que confirma la reserva de forma segura desde el servidor.
 
 ## Requisitos
 
@@ -36,14 +36,17 @@ npm run build
 
 Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y los datos iniciales.
 
-## Catálogo y reservas
+## Catálogo, reservas y pago simulado
 
 - La página `/servicios` consulta las categorías, nombres, duraciones y precios reales de Supabase.
 - La página `/reservar` permite seleccionar servicios, fecha y un horario disponible; muestra los importes en soles peruanos.
 - `get-available-slots` calcula los horarios con la zona `America/Lima`, horarios de atención, fechas bloqueadas y reservas vigentes.
 - `create-reservation` vuelve a validar todo en el servidor y crea los importes históricos de cada servicio en una operación atómica.
+- Al crear una reserva se abre `/pago/:reservationId`. El pago simulado no pide ni guarda datos de tarjeta.
+- `process-simulated-payment` registra un pago aprobado y cambia la reserva a `confirmed` en una sola operación del servidor. Solo puede pagar el propietario de una reserva futura pendiente.
+- `/mis-reservas` muestra las próximas reservas pendientes de pago y enlaza a su pago correspondiente.
 
-Antes de probar una reserva debes ejecutar la migración de Fase 4 y desplegar las dos Edge Functions. La guía explica esos pasos sin exponer claves privadas.
+Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la tercera Edge Function. La guía explica esos pasos sin exponer claves privadas.
 
 ## Autenticación
 
@@ -58,4 +61,4 @@ Antes de probar una reserva debes ejecutar la migración de Fase 4 y desplegar l
 - Supabase (Auth, PostgreSQL, RLS y Edge Functions)
 - Vercel
 
-El pago simulado, historial, panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.
+El historial completo, panel administrativo, pruebas finales y despliegue se incorporarán en las fases posteriores.

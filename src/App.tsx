@@ -8,6 +8,7 @@ import { BookingPage } from './pages/BookingPage';
 import { HomePage } from './pages/HomePage';
 import { MyReservationsPage } from './pages/MyReservationsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PaymentPage } from './pages/PaymentPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { ServicesPage } from './pages/ServicesPage';
 
@@ -31,6 +32,14 @@ export function App() {
           element={
             <RequireAuth>
               <MyReservationsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/pago/:reservationId"
+          element={
+            <RequireAuth>
+              <PaymentPage />
             </RequireAuth>
           }
         />

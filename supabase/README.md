@@ -2,7 +2,7 @@
 
 La migración `migrations/202609070001_initial_schema.sql` crea las ocho tablas requeridas, los tipos de estado, los disparadores de auditoría, las validaciones de disponibilidad y las políticas RLS.
 
-La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos. La migración `migrations/202609080002_grant_booking_function_reads.sql` concede a las Edge Functions el acceso mínimo de lectura necesario para calcular disponibilidad.
+La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos. La migración `migrations/202609080002_grant_booking_function_reads.sql` concede a las Edge Functions el acceso mínimo de lectura necesario para calcular disponibilidad. La migración `migrations/202609080003_process_simulated_payment.sql` crea el pago simulado atómico y confirma la reserva.
 
 ## Aplicación en Supabase
 
@@ -12,15 +12,16 @@ La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la ope
 4. Ejecuta `seed.sql` para cargar los servicios y horarios de demostración.
 5. Ejecuta `migrations/202609080001_create_reservation_rpc.sql` después de la migración inicial. Si usas SQL Editor, pégala en una consulta nueva y selecciona **Run** una sola vez.
 6. Ejecuta `migrations/202609080002_grant_booking_function_reads.sql` una sola vez para habilitar la consulta segura de horarios desde las Edge Functions.
-7. Crea el primer usuario administrador desde Supabase Auth. En la siguiente fase añadiremos una operación administrativa segura para asignarle el rol `admin`.
+7. Ejecuta `migrations/202609080003_process_simulated_payment.sql` una sola vez. Crea un índice que evita dos pagos aprobados para la misma reserva y permite que solo el servidor confirme una reserva tras el pago simulado.
+8. Crea el primer usuario administrador desde Supabase Auth. En la siguiente fase añadiremos una operación administrativa segura para asignarle el rol `admin`.
 
 ## Edge Functions de reservas
 
-Las funciones están en `functions/get-available-slots` y `functions/create-reservation`.
+Las funciones están en `functions/get-available-slots`, `functions/create-reservation` y `functions/process-simulated-payment`.
 
 1. Inicia sesión en la CLI con `supabase login` y vincula el proyecto con `supabase link --project-ref TU_PROJECT_REF`.
-2. Despliega ambas funciones con `supabase functions deploy get-available-slots` y `supabase functions deploy create-reservation`.
-3. Prueba el flujo desde `/reservar` con una cuenta que haya confirmado su correo.
+2. Despliega las funciones con `supabase functions deploy get-available-slots`, `supabase functions deploy create-reservation` y `supabase functions deploy process-simulated-payment`.
+3. Prueba el flujo desde `/reservar` con una cuenta que haya confirmado su correo; al crear una cita, abre el pago simulado y confirma la reserva.
 
 Supabase proporciona a sus Edge Functions alojadas las variables seguras de proyecto, incluida la clave de servidor. No copies ni configures `service_role_key` en el navegador, `.env.local` o GitHub.
 
