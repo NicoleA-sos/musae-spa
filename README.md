@@ -4,7 +4,11 @@ SPA para gestionar reservas de un salón de belleza. El proyecto se desarrolla p
 
 ## Estado actual
 
-Las fases 1 a 7 están completadas. La fase 8 deja lista la publicación en Vercel y la lista de comprobación final.
+Las fases 1 a 7 están completadas. La fase 8 dejó publicada la aplicación en Vercel y mantiene pendiente únicamente la comprobación final de Auth con un segundo correo.
+
+## Aplicación publicada
+
+La aplicación está disponible en [https://musae-spa.vercel.app](https://musae-spa.vercel.app).
 
 ## Requisitos
 
@@ -63,12 +67,12 @@ Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la te
 
 ## Publicación en Vercel (Fase 8)
 
-1. Importa el repositorio `NicoleA-sos/musae-spa` en Vercel. La configuración ya reconoce Vite y conserva las rutas de la SPA, incluido `/auth` y `/administracion`.
-2. En **Settings → Environment Variables** de Vercel, crea solo estas dos variables para Production:
+1. Importa el repositorio `NicoleA-sos/musae-spa` en Vercel. La configuración reconoce Vite y conserva las rutas de la SPA, incluido `/auth` y `/administracion`.
+2. En **Settings → Environment Variables** de Vercel, crea solo estas dos variables para Production y Preview:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY` (también llamada clave `publishable`)
-3. Publica el proyecto y copia su URL HTTPS, por ejemplo `https://tu-proyecto.vercel.app`.
-4. En Supabase ve a **Authentication → URL Configuration** y cambia **Site URL** por esa URL. En **Redirect URLs**, conserva las locales y agrega `https://tu-proyecto.vercel.app/iniciar-sesion` y `https://tu-proyecto.vercel.app/recuperar-contrasena`.
+3. Publica el proyecto. La URL actual es `https://musae-spa.vercel.app`.
+4. En Supabase ve a **Authentication → URL Configuration** y cambia **Site URL** por `https://musae-spa.vercel.app`. En **Redirect URLs**, conserva las locales y agrega `https://musae-spa.vercel.app/iniciar-sesion` y `https://musae-spa.vercel.app/recuperar-contrasena`.
 5. Prueba en la URL publicada: registro o inicio de sesión, disponibilidad, creación y pago simulado, historial y administración con la cuenta administradora.
 
 Nunca configures `service_role_key` ni `VITE_SUPABASE_SECRET_KEY` en Vercel para esta aplicación. Esas claves privadas permanecen únicamente dentro de las Edge Functions de Supabase.
