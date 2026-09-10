@@ -140,6 +140,8 @@ Los importes, nombres y duraciones se copian en `reservation_items` al crear una
 - [Pago simulado aprobado](docs/capturas/pago-aprobado.png)
 - [Cancelación con reembolso simulado](docs/capturas/cancelacion-reembolso.png)
 - [Cancelación bloqueada fuera del plazo](docs/capturas/cancelacion-fuera-de-plazo.png)
+- [Cambio de precio desde administración](docs/capturas/servicio-actualizado.png)
+- [Conservación del precio histórico](docs/capturas/precio-historico.png)
 - [Pago simulado rechazado](docs/capturas/pago-rechazado.png)
 - [Panel de administración](docs/capturas/administracion.png)
 - [Inicio en celular](docs/capturas/inicio-movil.png)
