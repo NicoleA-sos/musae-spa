@@ -136,6 +136,7 @@ Los importes, nombres y duraciones se copian en `reservation_items` al crear una
 - [Inicio en escritorio](docs/capturas/inicio-escritorio.png)
 - [Reserva con horarios disponibles](docs/capturas/reserva-horarios.png)
 - [Pago simulado aprobado](docs/capturas/pago-aprobado.png)
+- [Pago simulado rechazado](docs/capturas/pago-rechazado.png)
 - [Panel de administración](docs/capturas/administracion.png)
 - [Inicio en celular](docs/capturas/inicio-movil.png)
 
