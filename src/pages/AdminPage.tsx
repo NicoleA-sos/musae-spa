@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { executeAdminAction, type AdminAction } from '../features/admin/adminApi';
 import {
@@ -127,6 +127,7 @@ export function AdminPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
   const [activeAction, setActiveAction] = useState('');
+  const feedbackRef = useRef<HTMLDivElement>(null);
 
   async function refreshDashboard() {
     const nextData = await fetchAdminDashboard();
@@ -142,6 +143,12 @@ export function AdminPage() {
 
     return () => { isActive = false; };
   }, []);
+
+  useEffect(() => {
+    if (errorMessage || notice) {
+      feedbackRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [errorMessage, notice]);
 
   async function handleAction(action: AdminAction, actionKey: string) {
     setErrorMessage('');
@@ -170,8 +177,12 @@ export function AdminPage() {
       <p className="text-sm font-semibold tracking-[0.18em] text-[#b83e63] uppercase">Administración</p>
       <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-[#2d1937]">Gestiona la operación del salón</h1>
       <p className="mt-4 max-w-3xl text-lg leading-8 text-slate-600">Los cambios se validan en el servidor y quedan asociados a la cuenta administradora.</p>
-      {errorMessage ? <p className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">{errorMessage}</p> : null}
-      {notice ? <output className="mt-6 block rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">{notice}</output> : null}
+      {errorMessage || notice ? (
+        <div ref={feedbackRef}>
+          {errorMessage ? <p className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">{errorMessage}</p> : null}
+          {notice ? <output className="mt-6 block rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">{notice}</output> : null}
+        </div>
+      ) : null}
 
       <div className="mt-10 space-y-12">
         <section aria-labelledby="admin-services">
