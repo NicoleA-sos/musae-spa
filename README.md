@@ -51,6 +51,7 @@ Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y l
 - `/mis-reservas` separa las próximas citas del historial y muestra sus servicios, total, estado de reserva y estado de pago.
 - Cada cliente sigue viendo únicamente sus propios datos mediante las políticas RLS existentes de Supabase.
 - Las reservas pendientes futuras conservan el botón para completar el pago simulado; las demás permiten consultar su detalle.
+- El cliente puede cancelar desde **Mis reservas**. Las reservas confirmadas exigen al menos 12 horas de anticipación; cuando tenían un pago aprobado, este queda marcado como reembolsado dentro de la simulación.
 
 Antes de probar el pago debes ejecutar la migración de Fase 5 y desplegar la tercera Edge Function. La guía explica esos pasos sin exponer claves privadas.
 
@@ -135,6 +136,7 @@ Los importes, nombres y duraciones se copian en `reservation_items` al crear una
 
 - [Inicio en escritorio](docs/capturas/inicio-escritorio.png)
 - [Reserva con horarios disponibles](docs/capturas/reserva-horarios.png)
+- [Horario ocupado no disponible](docs/capturas/horario-ocupado.png)
 - [Pago simulado aprobado](docs/capturas/pago-aprobado.png)
 - [Pago simulado rechazado](docs/capturas/pago-rechazado.png)
 - [Panel de administración](docs/capturas/administracion.png)

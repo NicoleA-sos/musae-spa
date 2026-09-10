@@ -2,7 +2,7 @@
 
 La migración `migrations/202609070001_initial_schema.sql` crea las ocho tablas requeridas, los tipos de estado, los disparadores de auditoría, las validaciones de disponibilidad y las políticas RLS.
 
-La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos. La migración `migrations/202609080002_grant_booking_function_reads.sql` concede a las Edge Functions el acceso mínimo de lectura necesario para calcular disponibilidad. La migración `migrations/202609080003_process_simulated_payment.sql` crea el pago simulado atómico y confirma la reserva. La migración `migrations/202609090001_simulated_payment_attempts.sql` registra los intentos aprobados y rechazados de la pasarela ficticia. La migración `migrations/202609100001_required_initial_services.sql` carga el catálogo inicial requerido y desactiva los servicios de demostración reemplazados, sin alterar el historial de reservas.
+La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la operación atómica que crea una reserva con precios y duraciones históricos. La migración `migrations/202609080002_grant_booking_function_reads.sql` concede a las Edge Functions el acceso mínimo de lectura necesario para calcular disponibilidad. La migración `migrations/202609080003_process_simulated_payment.sql` crea el pago simulado atómico y confirma la reserva. La migración `migrations/202609090001_simulated_payment_attempts.sql` registra los intentos aprobados y rechazados de la pasarela ficticia. La migración `migrations/202609100001_required_initial_services.sql` carga el catálogo inicial requerido y desactiva los servicios de demostración reemplazados, sin alterar el historial de reservas. La migración `migrations/202609100002_customer_cancellation.sql` permite que cada cliente cancele su propia reserva y registra un reembolso simulado cuando corresponde.
 
 ## Aplicación en Supabase
 
@@ -15,15 +15,16 @@ La migración `migrations/202609080001_create_reservation_rpc.sql` agrega la ope
 7. Ejecuta `migrations/202609080003_process_simulated_payment.sql` una sola vez. Crea un índice que evita dos pagos aprobados para la misma reserva y permite que solo el servidor confirme una reserva tras el pago simulado.
 8. Ejecuta `migrations/202609090001_simulated_payment_attempts.sql` una sola vez. Esta función registra los intentos de Tarjeta, Yape o Plin sin recibir ni guardar datos bancarios reales.
 9. Ejecuta `migrations/202609100001_required_initial_services.sql` una sola vez. Carga Manos, Pies y Cabello con los siete servicios iniciales requeridos.
-10. Crea el primer usuario administrador desde Supabase Auth y asígnale el rol según la sección **Administración** de esta guía.
+10. Ejecuta `migrations/202609100002_customer_cancellation.sql` una sola vez. Habilita la cancelación segura para el cliente y conserva la regla de 12 horas.
+11. Crea el primer usuario administrador desde Supabase Auth y asígnale el rol según la sección **Administración** de esta guía.
 
 ## Edge Functions de reservas
 
-Las funciones están en `functions/get-available-slots`, `functions/create-reservation` y `functions/process-simulated-payment`.
+Las funciones están en `functions/get-available-slots`, `functions/create-reservation`, `functions/process-simulated-payment` y `functions/cancel-reservation`.
 
 1. Inicia sesión en la CLI con `supabase login` y vincula el proyecto con `supabase link --project-ref TU_PROJECT_REF`.
-2. Despliega las funciones con `supabase functions deploy get-available-slots`, `supabase functions deploy create-reservation` y `supabase functions deploy process-simulated-payment`.
-3. Prueba el flujo desde `/reservar` con una cuenta que haya confirmado su correo; al crear una cita, abre el pago simulado y confirma la reserva.
+2. Despliega las funciones con `supabase functions deploy get-available-slots`, `supabase functions deploy create-reservation`, `supabase functions deploy process-simulated-payment` y `supabase functions deploy cancel-reservation`.
+3. Prueba el flujo desde `/reservar` con una cuenta que haya confirmado su correo; al crear una cita, abre el pago simulado, confirma la reserva o cancélala desde **Mis reservas**.
 
 Supabase proporciona a sus Edge Functions alojadas las variables seguras de proyecto, incluida la clave de servidor. No copies ni configures `service_role_key` en el navegador, `.env.local` o GitHub.
 
