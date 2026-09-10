@@ -14,6 +14,13 @@ import type { ReservationStatus } from '../types/domain';
 
 const dayLabels = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
+function paymentStatusLabel(status: AdminReservation['paymentStatus']): string {
+  if (status === 'approved') return 'Pago aprobado';
+  if (status === 'failed') return 'Último intento rechazado';
+  if (status === 'refunded') return 'Pago reembolsado';
+  return 'Pago pendiente';
+}
+
 function getString(formData: FormData, field: string): string {
   const value = formData.get(field);
   return typeof value === 'string' ? value : '';
@@ -103,10 +110,10 @@ function ReservationEditor({ isSaving, onAction, reservation }: EditorProps & { 
       <div>
         <p className="font-semibold text-[#2d1937]">{reservation.customerName || reservation.customerEmail}</p>
         <p className="mt-1 text-sm text-slate-600">{formatDateTimeInLima(reservation.startsAt)} · {reservation.serviceNames.join(' · ') || 'Sin servicios'}</p>
-        <p className="mt-1 text-sm text-slate-600">{formatPen(reservation.totalAmount)} · {reservation.paymentStatus === 'approved' ? 'Pago aprobado' : 'Pago pendiente'}</p>
+        <p className="mt-1 text-sm text-slate-600">{formatPen(reservation.totalAmount)} · {paymentStatusLabel(reservation.paymentStatus)}</p>
       </div>
       <div className="flex flex-col gap-2 sm:items-end">
-        <select name="status" defaultValue={reservation.status} disabled={isClosed} className="h-10 rounded-lg border border-rose-200 bg-white px-2 text-sm disabled:bg-slate-100"><option value="pending">Pendiente de pago</option><option value="confirmed">Confirmada</option><option value="completed">Completada</option><option value="no_show">No asistió</option><option value="cancelled">Cancelada</option></select>
+        <select name="status" defaultValue={reservation.status} disabled={isClosed} className="h-10 rounded-lg border border-rose-200 bg-white px-2 text-sm disabled:bg-slate-100"><option value="pending">Pendiente de pago</option><option value="confirmed">Confirmada</option><option value="completed">Atendida</option><option value="no_show">No asistió</option><option value="cancelled">Cancelada</option></select>
         <input name="cancellationReason" placeholder="Motivo de cancelación (opcional)" maxLength={500} disabled={isClosed} className="h-10 w-full rounded-lg border border-rose-200 px-2 text-sm sm:w-60 disabled:bg-slate-100" />
         <button disabled={isSaving || isClosed} className="h-10 rounded-lg bg-[#2d1937] px-4 text-sm font-semibold text-white disabled:opacity-60">{isSaving ? 'Guardando…' : isClosed ? 'Reserva cerrada' : 'Actualizar estado'}</button>
       </div>

@@ -19,8 +19,17 @@ export interface CustomerReservation {
   payment: {
     id: string;
     status: 'pending' | 'approved' | 'failed' | 'refunded';
+    provider: string;
+    operationCode: string | null;
     createdAt: string;
   } | null;
+  paymentAttempts: Array<{
+    id: string;
+    status: 'pending' | 'approved' | 'failed' | 'refunded';
+    provider: string;
+    operationCode: string | null;
+    createdAt: string;
+  }>;
 }
 
 export type PaymentReservation = CustomerReservation;
@@ -41,14 +50,17 @@ interface ReservationRow {
   payments?: Array<{
     id: string;
     status: 'pending' | 'approved' | 'failed' | 'refunded';
+    provider: string;
+    provider_reference: string | null;
     created_at: string;
   }> | null;
 }
 
 function mapReservation(row: ReservationRow): CustomerReservation {
-  const latestPayment = [...(row.payments ?? [])].sort(
+  const paymentAttempts = [...(row.payments ?? [])].sort(
     (first, second) => new Date(second.created_at).getTime() - new Date(first.created_at).getTime(),
-  )[0] ?? null;
+  );
+  const latestPayment = paymentAttempts[0] ?? null;
 
   return {
     id: row.id,
@@ -67,9 +79,18 @@ function mapReservation(row: ReservationRow): CustomerReservation {
       ? {
           id: latestPayment.id,
           status: latestPayment.status,
+          provider: latestPayment.provider,
+          operationCode: latestPayment.provider_reference,
           createdAt: latestPayment.created_at,
         }
       : null,
+    paymentAttempts: paymentAttempts.map((payment) => ({
+      id: payment.id,
+      status: payment.status,
+      provider: payment.provider,
+      operationCode: payment.provider_reference,
+      createdAt: payment.created_at,
+    })),
   };
 }
 
@@ -78,7 +99,7 @@ export async function fetchCustomerReservations(): Promise<CustomerReservation[]
   const { data, error } = await client
     .from('reservations')
     .select(
-      'id, starts_at, ends_at, total_amount, currency, status, reservation_items(id, service_name_snapshot, duration_minutes_snapshot, unit_price_snapshot), payments(id, status, created_at)',
+      'id, starts_at, ends_at, total_amount, currency, status, reservation_items(id, service_name_snapshot, duration_minutes_snapshot, unit_price_snapshot), payments(id, status, provider, provider_reference, created_at)',
     )
     .order('starts_at', { ascending: false });
 
@@ -94,7 +115,7 @@ export async function fetchPaymentReservation(reservationId: string): Promise<Pa
   const { data, error } = await client
     .from('reservations')
     .select(
-      'id, starts_at, ends_at, total_amount, currency, status, reservation_items(id, service_name_snapshot, duration_minutes_snapshot, unit_price_snapshot), payments(id, status, created_at)',
+      'id, starts_at, ends_at, total_amount, currency, status, reservation_items(id, service_name_snapshot, duration_minutes_snapshot, unit_price_snapshot), payments(id, status, provider, provider_reference, created_at)',
     )
     .eq('id', reservationId)
     .single();

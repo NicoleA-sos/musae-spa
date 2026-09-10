@@ -21,7 +21,7 @@ const statusLabel: Record<ReservationStatus, string> = {
   pending: 'Pendiente de pago',
   confirmed: 'Confirmada',
   cancelled: 'Cancelada',
-  completed: 'Completada',
+  completed: 'Atendida',
   no_show: 'No asistió',
 };
 
@@ -37,9 +37,13 @@ function ReservationCard({ reservation, now }: { reservation: CustomerReservatio
   const serviceNames = reservation.items.map((item) => item.serviceName).join(' · ');
   const paymentLabel = reservation.payment?.status === 'approved'
     ? 'Pago simulado aprobado'
-    : reservation.status === 'pending'
-      ? 'Pago pendiente'
-      : 'Sin pago registrado';
+    : reservation.payment?.status === 'failed'
+      ? 'Último intento rechazado'
+      : reservation.payment?.status === 'refunded'
+        ? 'Pago reembolsado'
+        : reservation.status === 'pending'
+          ? 'Pago pendiente'
+          : 'Sin pago registrado';
 
   return (
     <article className="rounded-2xl border border-rose-100 bg-white p-5 shadow-sm">

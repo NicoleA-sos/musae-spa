@@ -13,8 +13,13 @@ export interface CreateReservationInput {
   customerNotes: string | null;
 }
 
+export type SimulatedPaymentMethod = 'card' | 'yape' | 'plin';
+export type SimulatedPaymentOutcome = 'approved' | 'rejected';
+
 export interface PaymentInput {
   reservationId: string;
+  method: SimulatedPaymentMethod;
+  outcome: SimulatedPaymentOutcome;
 }
 
 function assertServiceIds(value: unknown): string[] {
@@ -91,11 +96,22 @@ export function parsePaymentInput(value: unknown): PaymentInput {
     throw new Error('La solicitud no tiene un formato válido.');
   }
 
-  const reservationId = (value as Record<string, unknown>).reservationId;
+  const body = value as Record<string, unknown>;
+  const reservationId = body.reservationId;
+  const method = body.method;
+  const outcome = body.outcome;
 
   if (typeof reservationId !== 'string' || !uuidPattern.test(reservationId)) {
     throw new Error('La reserva seleccionada no es válida.');
   }
 
-  return { reservationId };
+  if (method !== 'card' && method !== 'yape' && method !== 'plin') {
+    throw new Error('Selecciona un método de pago simulado válido.');
+  }
+
+  if (outcome !== 'approved' && outcome !== 'rejected') {
+    throw new Error('Selecciona un resultado simulado válido.');
+  }
+
+  return { reservationId, method, outcome };
 }

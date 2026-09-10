@@ -23,16 +23,25 @@ async function getFunctionErrorMessage(error: unknown): Promise<string> {
 
 export interface SimulatedPaymentResult {
   paymentId: string;
-  paymentStatus: 'approved';
-  reservationStatus: 'confirmed';
+  paymentStatus: 'approved' | 'rejected';
+  reservationStatus: 'pending' | 'confirmed';
   amount: number;
   currency: string;
+  method: SimulatedPaymentMethod;
+  operationCode: string | null;
 }
 
-export async function processSimulatedPayment(reservationId: string): Promise<SimulatedPaymentResult> {
+export type SimulatedPaymentMethod = 'card' | 'yape' | 'plin';
+export type SimulatedPaymentOutcome = 'approved' | 'rejected';
+
+export async function processSimulatedPayment(
+  reservationId: string,
+  method: SimulatedPaymentMethod,
+  outcome: SimulatedPaymentOutcome,
+): Promise<SimulatedPaymentResult> {
   const client = requireSupabaseClient();
   const { data, error } = await client.functions.invoke<SimulatedPaymentResult>('process-simulated-payment', {
-    body: { reservationId },
+    body: { reservationId, method, outcome },
   });
 
   if (error || !data) {

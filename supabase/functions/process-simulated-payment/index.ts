@@ -4,10 +4,11 @@ import { jsonResponse } from '../_shared/cors.ts';
 
 interface PaymentResult {
   payment_id: string;
-  payment_status: 'approved';
-  reservation_status: 'confirmed';
+  payment_status: 'approved' | 'failed';
+  reservation_status: 'pending' | 'confirmed';
   amount: number | string;
   currency: string;
+  operation_code: string | null;
 }
 
 Deno.serve(async (request) => {
@@ -21,12 +22,14 @@ Deno.serve(async (request) => {
 
   try {
     const user = await requireUser(request);
-    const { reservationId } = parsePaymentInput(await request.json());
+    const { reservationId, method, outcome } = parsePaymentInput(await request.json());
     const admin = createServiceClient();
-    const { data, error } = await admin.rpc('process_simulated_payment', {
+    const { data, error } = await admin.rpc('process_simulated_payment_attempt', {
       p_reservation_id: reservationId,
       p_customer_id: user.id,
       p_actor_id: user.id,
+      p_method: method,
+      p_outcome: outcome,
     });
 
     if (error || !data?.[0]) {
@@ -36,6 +39,8 @@ Deno.serve(async (request) => {
         'Solo se pueden pagar reservas pendientes',
         'No se puede procesar el pago de una reserva pasada',
         'La cuenta no está disponible para procesar pagos',
+        'Selecciona un método de pago simulado válido',
+        'Selecciona un resultado simulado válido',
       ];
       const safeMessage = error && safeMessages.includes(error.message)
         ? error.message
@@ -48,10 +53,12 @@ Deno.serve(async (request) => {
 
     return jsonResponse(request, {
       paymentId: payment.payment_id,
-      paymentStatus: payment.payment_status,
+      paymentStatus: payment.payment_status === 'approved' ? 'approved' : 'rejected',
       reservationStatus: payment.reservation_status,
       amount: Number(payment.amount),
       currency: payment.currency,
+      method,
+      operationCode: payment.operation_code,
     }, 201);
   } catch (error) {
     if (error instanceof Response) return error;

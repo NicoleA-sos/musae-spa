@@ -43,7 +43,7 @@ Revisa [la guía de Supabase](supabase/README.md) para aplicar la migración y l
 - `get-available-slots` calcula los horarios con la zona `America/Lima`, horarios de atención, fechas bloqueadas y reservas vigentes.
 - `create-reservation` vuelve a validar todo en el servidor y crea los importes históricos de cada servicio en una operación atómica.
 - Al crear una reserva se abre `/pago/:reservationId`. El pago simulado no pide ni guarda datos de tarjeta.
-- `process-simulated-payment` registra un pago aprobado y cambia la reserva a `confirmed` en una sola operación del servidor. Solo puede pagar el propietario de una reserva futura pendiente.
+- La pasarela simulada permite probar Tarjeta, Yape o Plin con datos ficticios que permanecen en el navegador. Cada intento queda registrado como aprobado o rechazado; solo un aprobado genera un código de operación y cambia la reserva a `confirmed`.
 - `/mis-reservas` muestra las próximas reservas pendientes de pago y enlaza a su pago correspondiente.
 
 ## Historial de reservas
