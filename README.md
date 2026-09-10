@@ -79,6 +79,58 @@ Nunca configures `service_role_key` ni `VITE_SUPABASE_SECRET_KEY` en Vercel para
 - Supabase (Auth, PostgreSQL, RLS y Edge Functions)
 - Vercel
 
+## Arquitectura
+
+La aplicación separa la interfaz, la lógica y el acceso a datos:
+
+```text
+Páginas y componentes de React
+             │
+             ▼
+Casos de uso y repositorios por funcionalidad
+             │
+             ▼
+Supabase Auth y PostgreSQL ─── Edge Functions
+```
+
+- Las páginas y componentes muestran la interfaz y gestionan la interacción.
+- Los repositorios consultan datos de Supabase.
+- Las API de cada funcionalidad invocan Edge Functions para operaciones sensibles.
+- Las Edge Functions validan sesión, rol, disponibilidad y precios antes de modificar la base de datos.
+- El navegador usa solamente `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. Ninguna clave privada se incluye en el repositorio ni en Vercel.
+
+## Modelo de datos
+
+```text
+auth.users ── profiles ── reservations ── reservation_items ── services ── service_categories
+                               │
+                               └──────────────── payments
+
+business_hours y blocked_dates controlan la disponibilidad de reservations.
+```
+
+Los importes, nombres y duraciones se copian en `reservation_items` al crear una reserva. Así, los cambios posteriores del catálogo no alteran el historial.
+
+## Flujo de pantallas
+
+1. **Inicio** y **Servicios** son públicos.
+2. La persona puede registrarse, iniciar sesión o recuperar su contraseña.
+3. En **Reservar** selecciona servicios, fecha y un horario disponible.
+4. La reserva pasa al **Pago simulado**, donde puede aprobarse o rechazarse sin datos bancarios reales.
+5. **Mis reservas** muestra próximas citas e historial.
+6. **Administración** está disponible solo para perfiles administradores y permite gestionar el catálogo, horarios, bloqueos y reservas.
+
+## Desarrollo por fases
+
+1. Base de React, Vite y TypeScript.
+2. Modelo de datos, Supabase, RLS y autenticación.
+3. Catálogo y reserva con validación de disponibilidad.
+4. Historial, cancelaciones y perfil.
+5. Pago simulado y estados de pago.
+6. Panel de administración.
+7. Pantallas públicas y recuperación de contraseña.
+8. Preparación de documentación, pruebas y despliegue en Vercel.
+
 ## Administración
 
 - La ruta `/administracion` está disponible únicamente para perfiles activos con rol `admin`.
