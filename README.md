@@ -131,6 +131,14 @@ Los importes, nombres y duraciones se copian en `reservation_items` al crear una
 7. Pantallas públicas y recuperación de contraseña.
 8. Preparación de documentación, pruebas y despliegue en Vercel.
 
+## Capturas
+
+- [Inicio en escritorio](docs/capturas/inicio-escritorio.png)
+- [Reserva con horarios disponibles](docs/capturas/reserva-horarios.png)
+- [Pago simulado aprobado](docs/capturas/pago-aprobado.png)
+- [Panel de administración](docs/capturas/administracion.png)
+- [Inicio en celular](docs/capturas/inicio-movil.png)
+
 ## Administración
 
 - La ruta `/administracion` está disponible únicamente para perfiles activos con rol `admin`.
