@@ -1,5 +1,5 @@
 import { useState, type ComponentProps } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { getUserFacingError } from '../lib/errors';
 import { useAuth } from '../features/auth/AuthProvider';
@@ -12,12 +12,12 @@ interface AuthLocationState {
 
 type FormSubmitEvent = Parameters<NonNullable<ComponentProps<'form'>['onSubmit']>>[0];
 
-export function AuthPage() {
+export function AuthPage({ initialMode = 'sign-in' }: { initialMode?: AuthMode }) {
   const { isConfigured, isLoading, user, signIn, signUp } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const destination = (location.state as AuthLocationState | null)?.from ?? '/perfil';
-  const [mode, setMode] = useState<AuthMode>('sign-in');
+  const [mode, setMode] = useState<AuthMode>(initialMode);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -170,6 +170,14 @@ export function AuthPage() {
               />
               {isSignUp ? <p className="mt-2 text-sm text-slate-500">Mínimo 8 caracteres.</p> : null}
             </div>
+
+            {!isSignUp ? (
+              <div className="text-right">
+                <Link className="text-sm font-semibold text-[#8f244c] hover:underline" to="/recuperar-contrasena">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
+            ) : null}
 
             {errorMessage ? (
               <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm leading-6 text-red-800" role="alert">

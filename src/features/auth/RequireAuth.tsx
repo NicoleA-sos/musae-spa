@@ -20,11 +20,11 @@ export function RequireAuth({ children, requireAdmin = false }: RequireAuthProps
   }
 
   if (!isConfigured) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/iniciar-sesion" replace />;
   }
 
   if (!user) {
-    return <Navigate to="/auth" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/iniciar-sesion" replace state={{ from: location.pathname }} />;
   }
 
   if (requireAdmin && profile?.role !== 'admin') {
@@ -33,4 +33,3 @@ export function RequireAuth({ children, requireAdmin = false }: RequireAuthProps
 
   return <>{children}</>;
 }
-

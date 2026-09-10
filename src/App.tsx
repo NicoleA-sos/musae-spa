@@ -9,6 +9,7 @@ import { HomePage } from './pages/HomePage';
 import { MyReservationsPage } from './pages/MyReservationsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PaymentPage } from './pages/PaymentPage';
+import { PasswordRecoveryPage } from './pages/PasswordRecoveryPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { ServicesPage } from './pages/ServicesPage';
 
@@ -19,6 +20,9 @@ export function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/servicios" element={<ServicesPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/iniciar-sesion" element={<AuthPage initialMode="sign-in" />} />
+        <Route path="/registro" element={<AuthPage initialMode="sign-up" />} />
+        <Route path="/recuperar-contrasena" element={<PasswordRecoveryPage />} />
         <Route
           path="/reservar"
           element={

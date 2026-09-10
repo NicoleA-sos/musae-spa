@@ -46,6 +46,8 @@ interface AuthContextValue {
   profile: Profile | null;
   signIn: (input: SignInInput) => Promise<void>;
   signUp: (input: SignUpInput) => Promise<{ needsEmailConfirmation: boolean }>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  updatePassword: (password: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (input: ProfileInput) => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -158,7 +160,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: window.location.origin + '/auth',
+        emailRedirectTo: window.location.origin + '/iniciar-sesion',
       },
     });
 
@@ -167,6 +169,26 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
 
     return { needsEmailConfirmation: !data.session };
+  }, []);
+
+  const requestPasswordReset = useCallback(async (email: string) => {
+    const client = requireSupabaseClient();
+    const { error } = await client.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/recuperar-contrasena',
+    });
+
+    if (error) {
+      throw new AppError('No se pudo enviar el correo de recuperación. Inténtalo nuevamente.', error.code);
+    }
+  }, []);
+
+  const updatePassword = useCallback(async (password: string) => {
+    const client = requireSupabaseClient();
+    const { error } = await client.auth.updateUser({ password });
+
+    if (error) {
+      throw new AppError('No se pudo actualizar la contraseña. Solicita un enlace nuevo e inténtalo otra vez.', error.code);
+    }
   }, []);
 
   const signOut = useCallback(async () => {
@@ -211,11 +233,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
       profile,
       signIn,
       signUp,
+      requestPasswordReset,
+      updatePassword,
       signOut,
       updateProfile,
       refreshProfile,
     }),
-    [isLoading, profile, refreshProfile, session, signIn, signOut, signUp, updateProfile],
+    [isLoading, profile, refreshProfile, requestPasswordReset, session, signIn, signOut, signUp, updatePassword, updateProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

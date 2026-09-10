@@ -103,7 +103,7 @@ export function AppShell({ children }: PropsWithChildren) {
               </>
             ) : !isLoading ? (
               <NavLink
-                to="/auth"
+                to="/iniciar-sesion"
                 onClick={closeMenu}
                 className="mt-1 rounded-lg bg-[#2d1937] px-3 py-2 text-center text-sm font-medium text-white transition hover:bg-[#4a254f] md:ml-2 md:mt-0"
               >
