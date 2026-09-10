@@ -4,9 +4,9 @@
 
 insert into public.service_categories (name, description, display_order)
 values
-  ('Cabello', 'Cortes, peinados y tratamientos para el cabello.', 1),
-  ('Uñas', 'Manicure, pedicure y esmaltado.', 2),
-  ('Facial', 'Limpieza y cuidado facial.', 3)
+  ('Manos', 'Manicure y cuidado de manos.', 1),
+  ('Pies', 'Pedicure y cuidado de pies.', 2),
+  ('Cabello', 'Cortes y coloración para el cabello.', 3)
 on conflict (name) do update
   set description = excluded.description,
       display_order = excluded.display_order,
@@ -16,11 +16,13 @@ insert into public.services (category_id, name, description, duration_minutes, p
 select category.id, service.name, service.description, service.duration_minutes, service.price
 from (
   values
-    ('Cabello', 'Corte y lavado', 'Corte personalizado con lavado y secado.', 60, 55.00::numeric),
-    ('Cabello', 'Peinado', 'Peinado para una ocasión especial.', 45, 45.00::numeric),
-    ('Uñas', 'Manicure semipermanente', 'Cuidado de uñas y esmaltado semipermanente.', 60, 65.00::numeric),
-    ('Uñas', 'Pedicure spa', 'Pedicure con exfoliación e hidratación.', 75, 75.00::numeric),
-    ('Facial', 'Limpieza facial', 'Limpieza e hidratación según tu tipo de piel.', 60, 85.00::numeric)
+    ('Manos', 'Manicure básica', 'Limpieza, limado y esmaltado tradicional para las manos.', 45, 30.00::numeric),
+    ('Manos', 'Manicure semipermanente', 'Preparación de uñas y esmaltado semipermanente.', 60, 50.00::numeric),
+    ('Pies', 'Pedicure básica', 'Limpieza, limado y esmaltado tradicional para los pies.', 60, 40.00::numeric),
+    ('Pies', 'Pedicure semipermanente', 'Preparación de uñas y esmaltado semipermanente para los pies.', 75, 60.00::numeric),
+    ('Cabello', 'Corte para dama', 'Corte de cabello para dama.', 60, 30.00::numeric),
+    ('Cabello', 'Corte para caballero', 'Corte de cabello para caballero.', 30, 30.00::numeric),
+    ('Cabello', 'Tinte completo', 'Aplicación de tinte en todo el cabello.', 120, 120.00::numeric)
 ) as service(category_name, name, description, duration_minutes, price)
 join public.service_categories as category on category.name = service.category_name
 on conflict (category_id, name) do update
